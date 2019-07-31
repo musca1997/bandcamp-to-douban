@@ -4,7 +4,9 @@
 
 # requirements
 python3.6
+
 requests
+
 bs4
 
 # how to run 使用指南
