@@ -1,18 +1,33 @@
 import requests
 from bs4 import BeautifulSoup
+import os
+
+print("\n----------------------------------------------------------------")
+print(" Release Date Aug 2nd 2019        Author: Musca      ")
+print("  _          ___     _             _                 ")
+print(" | |        |__ \   | |           | |                ")
+print(" | |__   ___   ) |__| | ___  _   _| |__   __ _ _ __  ")
+print(" | '_ \ / __| / // _` |/ _ \| | | | '_ \ / _` | '_ \ ")
+print(" | |_) | (__ / /| (_| | (_) | |_| | |_) | (_| | | | |")
+print(" |_.__/ \___|____\__,_|\___/ \__,_|_.__/ \__,_|_| |_|")
+print(" \n此为纯免费脚本，请勿用作恶意用途及商用 ")
+print(" \n请注意不要向他人泄露自己的cookies ")
+print("----------------------------------------------------------------\n")
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+user_cookie = input('请输入你的cookies：')
+ck = input('请输入你的ck：')
 
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36",
 "Referer": "https://music.douban.com/new_subject",
 "Connection": "keep-alive",
-#在此处填入你的账号cookies
-"Cookie": '',
+"Cookie": user_cookie,
 "Cache-Control": "max-age=0",
 "Connection": "keep-alive",
 "Host": "music.douban.com",
 "Origin": "https://music.douban.com/",
 "Referer": "https://music.douban.com/new_subject"}
-#在此处填入cookies里的ck
-ck = ""
 
 
 def submit():
@@ -30,12 +45,13 @@ def image_upload(nuid, image_link):
     files = {
         "ck": (None, ck),
         "nuid": (None, nuid),
-        "picfile": ("cover.jpg", open("cover.jpg", "rb")),
+        "picfile": ("cover.jpg", open(dir_path + "/cover.jpg", "rb")),
         "img_submit": (None, "上传图片"),
         "as_new": (None, "t")
     }
     r = requests.post(headers=headers, files=files, url=url)
     print('条目上传成功！详见：{}'.format(url.replace("&update_image", "").replace("nuid=", "mine&nuid=")))
+    print('--------------------------------\n')
 
 def fetch_bandcamp():
     url = input('请输入你要上传的条目的bandcamp地址：')
@@ -55,7 +71,7 @@ def fetch_bandcamp():
 
     image_link = soup.find("link", attrs={"rel": "image_src"}).attrs['href']
     img = requests.get(url=image_link)
-    with open("cover.jpg", 'wb') as f:
+    with open(dir_path + "/cover.jpg", 'wb') as f:
         f.write(img.content)
 
     data = {
@@ -112,5 +128,8 @@ def genre():
     print('你选择了 -> {}, 上传条目中...'.format(picked_genre))
     return picked_genre
 
-
-submit()
+while True:
+    try:
+        submit()
+    except Exception as e:
+        print('遇到错误 -> {} \n 请给开发者写豆邮反应此问题 \n 开发者豆瓣：https://www.douban.com/people/antisocial97/。'.format(e))
